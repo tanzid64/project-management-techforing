@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     # Rest Framework
     "rest_framework",
+    "rest_framework_simplejwt",
     # Custom Apps
     "project_management",
 ]
@@ -120,3 +121,12 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+
+# Rest Framework Settings
+REST_FRAMEWORK = {
+    # Make jwt authentication as default
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    ),
+}
