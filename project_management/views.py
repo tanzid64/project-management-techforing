@@ -17,7 +17,7 @@ class UserRegistrationView(generics.CreateAPIView):
     serializer_class = UserRegistrationSerializer
 
     def create(self, request: Request, *args, **kwargs) -> Response:
-        serializer = UserSerializer(data=request.data)
+        serializer = self.get_serializer(data=request.data)
         if serializer.is_valid():
             user = serializer.save()
             tokens = get_tokens_for_user(user)
