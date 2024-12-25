@@ -9,7 +9,7 @@ class UserManager(BaseUserManager):
     """
 
     def create_user(
-        self, email: str, password: Optional[str] = None, **extra_fields
+        self, email: str, password: str, confirm_password: Optional[str] = None, **extra_fields
     ) -> Model:
         """
         Create and return a regular user with the given email and password.
