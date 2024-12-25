@@ -41,3 +41,53 @@ class UserRegistrationViewTestCase(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertIn("Passwords do not match", str(response.data))
         self.assertFalse(User.objects.filter(username="newuser").exists())
+
+
+class UserLoginViewTestCase(APITestCase):
+    """
+    Test cases for User Login View.
+    """
+
+    def setUp(self):
+        # Create a test user for login tests
+        self.user = User.objects.create_user(
+            username="testuser", email="testuser@example.com", password="securepassword"
+        )
+        self.login_url = "/api/users/login/"
+
+    def test_user_login_success(self):
+        data = {
+            "email": "testuser@example.com",
+            "password": "securepassword",
+        }
+
+        response = self.client.post(self.login_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("tokens", response.data)
+        self.assertTrue(response.data["success"])
+        self.assertEqual(response.data["message"], "User logged in successfully")
+
+    def test_user_login_invalid_credentials(self):
+        data = {
+            "email": "testuser@example.com",
+            "password": "wrongpassword",
+        }
+
+        response = self.client.post(self.login_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertFalse(response.data["success"])
+        self.assertEqual(response.data["message"], "Invalid email or password")
+
+    def test_user_login_nonexistent_user(self):
+        """
+        Test login with an email that doesn't exist.
+        """
+        data = {
+            "email": "nonexistent@example.com",
+            "password": "securepassword",
+        }
+
+        response = self.client.post(self.login_url, data=data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+        self.assertFalse(response.data["success"])
+        self.assertEqual(response.data["message"], "Invalid email or password")

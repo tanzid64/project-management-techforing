@@ -1,11 +1,12 @@
 from rest_framework.views import APIView
 from project_management.helpers import get_tokens_for_user
-from project_management.models import User
 from project_management.serializers import UserSerializer, UserRegistrationSerializer
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status, generics, permissions
-from django.contrib.auth import authenticate
+from django.contrib.auth import authenticate, get_user_model
+
+User = get_user_model()
 
 
 # Create your views here.
@@ -62,6 +63,7 @@ class UserGetUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     View for get, update and delete an user.
     Permissions: Any authenticated user can make a get request. For other request user can only make request on their own id. Admin can do everything.
     """
+
     serializer_class = UserSerializer
     queryset = User.objects.all()
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]

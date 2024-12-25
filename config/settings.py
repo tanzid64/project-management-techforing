@@ -23,6 +23,7 @@ DEBUG = env("DEBUG", default=False)
 
 ALLOWED_HOSTS = []
 
+AUTH_USER_MODEL = "project_management.User"
 
 # Application definition
 
@@ -126,7 +127,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Rest Framework Settings
 REST_FRAMEWORK = {
     # Make jwt authentication as default
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+        "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
 }

@@ -1,7 +1,8 @@
 from typing import Any, Dict
 from rest_framework import serializers
-from project_management.models import User
+from django.contrib.auth import get_user_model
 
+User = get_user_model()
 
 class UserSerializer(serializers.ModelSerializer):
     """
