@@ -134,3 +134,13 @@ class Task(TimeStampMixin):
         verbose_name = _("Task")
         verbose_name_plural = _("Tasks")
         ordering = ["-created_at"]
+        
+class Comment(TimeStampMixin):
+    content = models.TextField(verbose_name=_("Content"))
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, related_name="comments")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="comments")
+
+    class Meta:
+        verbose_name = _("Comment")
+        verbose_name_plural = _("Comments")
+        ordering = ["-created_at"]
