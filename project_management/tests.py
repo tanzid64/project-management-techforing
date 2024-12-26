@@ -1,8 +1,11 @@
 from rest_framework.test import APITestCase
+from rest_framework.test import APIClient
 from rest_framework import status
 from django.urls import reverse
 from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth import get_user_model
+
+from project_management.models import Project
 
 User = get_user_model()
 
@@ -197,3 +200,101 @@ class UserGetUpdateDeleteViewTestCase(APITestCase):
         response = self.client.delete(self.user1_url)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertFalse(User.objects.filter(id=self.user1.id).exists())
+
+
+class ProjectViewSetTestCase(APITestCase):
+    """ 
+    Test cases for ProjectViewSet.
+    """
+    def setUp(self):
+        # Create users
+        self.owner = User.objects.create_user(
+            username="owner", email="owner@example.com", password="ownerpassword"
+        )
+        self.other_user = User.objects.create_user(
+            username="other_user",
+            email="other_user@example.com",
+            password="otherpassword",
+        )
+        self.admin = User.objects.create_superuser(
+            username="admin", email="admin@example.com", password="adminpassword"
+        )
+
+        # Create a project owned by the owner
+        self.project = Project.objects.create(name="Test Project", owner=self.owner)
+
+        # Define endpoints
+        self.project_list_url = "/api/projects/"
+        self.project_detail_url = f"/api/projects/{self.project.id}/"
+
+    def test_list_projects_authenticated(self):
+        # Authenticate as any user
+        self.client.login(username="other_user", password="otherpassword")
+        response = self.client.get(self.project_list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertIn("data", response.data)
+
+    def test_list_projects_unauthenticated(self):
+        response = self.client.get(self.project_list_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_create_project_authenticated(self):
+        client = APIClient()
+        client.force_authenticate(user=self.owner)
+        data = {"name": "New Project", "description": "This is a new project"}
+        response = client.post(self.project_list_url, data)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+        self.assertEqual(response.data["message"], "Project created successfully")
+        self.assertEqual(response.data["data"]["name"], "New Project")
+
+    def test_create_project_unauthenticated(self):
+        data = {"name": "New Project", "description": "This is a new project"}
+        response = self.client.post(self.project_list_url, data)
+        self.assertEqual(response.status_code, status.HTTP_401_UNAUTHORIZED)
+
+    def test_update_project_by_owner(self):
+        client = APIClient()
+        client.force_authenticate(user=self.owner)
+        data = {"name": "Updated Project"}
+        response = client.patch(self.project_detail_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.project.refresh_from_db()
+        self.assertEqual(self.project.name, "Updated Project")
+
+    def test_update_project_by_admin(self):
+        client = APIClient()
+        client.force_authenticate(user=self.admin)
+        data = {"name": "Admin Updated Project"}
+        response = client.patch(self.project_detail_url, data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.project.refresh_from_db()
+        self.assertEqual(self.project.name, "Admin Updated Project")
+
+    def test_update_project_by_other_user(self):
+        client = APIClient()
+        client.force_authenticate(user=self.other_user)
+        data = {"name": "Unauthorized Update"}
+        response = client.patch(self.project_detail_url, data)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+
+    def test_delete_project_by_owner(self):
+        client = APIClient()
+        client.force_authenticate(user=self.owner)
+        response = client.delete(self.project_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Project.objects.filter(id=self.project.id).exists())
+
+    def test_delete_project_by_admin(self):
+        client = APIClient()
+        client.force_authenticate(user=self.admin)
+        response = client.delete(self.project_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertFalse(Project.objects.filter(id=self.project.id).exists())
+
+    def test_delete_project_by_other_user(self):
+        client = APIClient()
+        client.force_authenticate(user=self.other_user)
+        response = client.delete(self.project_detail_url)
+        self.assertEqual(response.status_code, status.HTTP_403_FORBIDDEN)
+        self.assertTrue(Project.objects.filter(id=self.project.id).exists())
+
