@@ -6,6 +6,7 @@ from project_management.views import (
     UserGetUpdateDeleteView,
     ProjectViewSet,
     TaskViewSet,
+    CommentViewSet,
 )
 
 router = routers.DefaultRouter()
@@ -18,8 +19,8 @@ task_detail_view = TaskViewSet.as_view(
 )
 
 # CommentViewSet URLs
-comment_list_create_view = TaskViewSet.as_view({"get": "list", "post": "create"})
-comment_detail_view = TaskViewSet.as_view(
+comment_list_create_view = CommentViewSet.as_view({"get": "list", "post": "create"})
+comment_detail_view = CommentViewSet.as_view(
     {"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}
 )
 

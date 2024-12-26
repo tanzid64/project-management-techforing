@@ -1,7 +1,7 @@
 from typing import Any, Dict
 from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from project_management.models import Project, Task
+from project_management.models import Project, Task, Comment
 
 User = get_user_model()
 
@@ -50,7 +50,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
 
 class UserLoginSerializer(serializers.Serializer):
     email = serializers.EmailField(required=True)
-    password = serializers.CharField(required=True,write_only=True)
+    password = serializers.CharField(required=True, write_only=True)
 
 
 class UserForProjectSerializer(serializers.ModelSerializer):
@@ -83,6 +83,9 @@ class TaskSerializer(serializers.ModelSerializer):
 
     assign_to = UserForProjectSerializer(source="assigned_to", read_only=True)
     project = ProjectSerializer(read_only=True)
+    assigned_to = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), write_only=True
+    )
 
     class Meta:
         model = Task
@@ -100,18 +103,38 @@ class TaskSerializer(serializers.ModelSerializer):
         )
         read_only_fields = ("created_at", "id")
 
+class TaskForCommentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Task for Comment.
+    """
+
+    class Meta:
+        model = Task
+        fields = ("id", "title", "description", "status", "priority", "due_date", "created_at")
+
 class CommentSerializer(serializers.ModelSerializer):
     """
     Serializer for Comment.
     """
 
+    task_details = TaskForCommentSerializer(source="task", read_only=True)
+    task = serializers.PrimaryKeyRelatedField(
+        queryset=Task.objects.all(), write_only=True
+    )
+    user_details = UserSerializer(source="user", read_only=True)
+    user = serializers.PrimaryKeyRelatedField(
+        queryset=User.objects.all(), write_only=True
+    )
+
     class Meta:
-        model = Task
+        model = Comment
         fields = (
             "id",
             "content",
-            "created_at",
-            "user",
             "task",
+            "user",
+            "user_details",
+            "task_details",
+            "created_at",
         )
         read_only_fields = ("created_at", "id")

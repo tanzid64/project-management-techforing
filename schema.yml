@@ -4,744 +4,185 @@ info:
   version: 1.0.0
   description: A project management API collection for Tech Foring Limited
   contact:
-    Author: Tanzid Haque
-    Email: tanzid3@gmail.com
-    Github: https://github.com/tanzid64
+    name: Tanzid Haque
+    email: tanzid3@gmail.com
+    url: https://github.com/tanzid64
 paths:
   /api/comments/{id}/:
     get:
       operationId: comments_retrieve
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
       tags:
-      - comments
+        - comments
       security:
-      - jwtAuth: []
-      - {}
+        - jwtAuth: []
       responses:
-        '200':
+        "200":
+          description: Retrieve a comment by ID
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
-          description: ''
+                $ref: "#/components/schemas/Task"
+              example:
+                id: 1
+                title: "Task 1"
+                description: "This is a task description."
+                status: "to_do"
+                priority: "high"
     put:
       operationId: comments_update
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
       tags:
-      - comments
+        - comments
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Task'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Task'
-        required: true
+              $ref: "#/components/schemas/Task"
+            example:
+              title: "Updated Task"
+              description: "Updated description of the task."
+              status: "in_progress"
+              priority: "medium"
       security:
-      - jwtAuth: []
-      - {}
+        - jwtAuth: []
       responses:
-        '200':
+        "200":
+          description: Update a comment by ID
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Task'
-          description: ''
-    patch:
-      operationId: comments_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - comments
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedTask'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedTask'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedTask'
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-          description: ''
+                $ref: "#/components/schemas/Task"
+              example:
+                id: 1
+                title: "Updated Task"
+                description: "Updated description of the task."
+                status: "in_progress"
+                priority: "medium"
     delete:
       operationId: comments_destroy
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
       tags:
-      - comments
+        - comments
       security:
-      - jwtAuth: []
-      - {}
+        - jwtAuth: []
       responses:
-        '204':
+        "204":
           description: No response body
   /api/projects/:
     get:
       operationId: projects_list
-      description: |-
-        View for get, create, update and delete a project.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request if they are the owner. Admin can do everything.
+      description: Retrieve a list of projects
       tags:
-      - projects
+        - projects
       security:
-      - jwtAuth: []
-      - {}
+        - jwtAuth: []
       responses:
-        '200':
+        "200":
+          description: List of projects
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Project'
-          description: ''
+                  $ref: "#/components/schemas/Project"
+              example:
+                - id: 1
+                  name: "Project A"
+                  description: "Sample project A description."
+                  created_at: "2023-12-25T12:00:00Z"
+                  updated_at: "2023-12-26T12:00:00Z"
+                  owner:
+                    id: 1
+                    username: "john_doe"
+                - id: 2
+                  name: "Project B"
+                  description: "Sample project B description."
+                  created_at: "2023-12-25T12:00:00Z"
+                  updated_at: "2023-12-26T12:00:00Z"
+                  owner:
+                    id: 2
+                    username: "jane_doe"
     post:
       operationId: projects_create
-      description: |-
-        View for get, create, update and delete a project.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request if they are the owner. Admin can do everything.
+      description: Create a new project
       tags:
-      - projects
+        - projects
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Project'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Project'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Project'
-        required: true
+              $ref: "#/components/schemas/Project"
+            example:
+              name: "New Project"
+              description: "Description for the new project."
       security:
-      - jwtAuth: []
+        - jwtAuth: []
       responses:
-        '201':
+        "201":
+          description: Project created
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Project'
-          description: ''
+                $ref: "#/components/schemas/Project"
+              example:
+                id: 3
+                name: "New Project"
+                description: "Description for the new project."
+                created_at: "2023-12-27T12:00:00Z"
+                updated_at: "2023-12-27T12:00:00Z"
+                owner:
+                  id: 1
+                  username: "john_doe"
   /api/projects/{id}/:
     get:
       operationId: projects_retrieve
-      description: |-
-        View for get, create, update and delete a project.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request if they are the owner. Admin can do everything.
+      description: Retrieve a single project by ID
       parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Project.
-        required: true
+        - in: path
+          name: id
+          schema:
+            type: integer
+          required: true
       tags:
-      - projects
+        - projects
       security:
-      - jwtAuth: []
-      - {}
+        - jwtAuth: []
       responses:
-        '200':
+        "200":
+          description: Single project details
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Project'
-          description: ''
-    put:
-      operationId: projects_update
-      description: |-
-        View for get, create, update and delete a project.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request if they are the owner. Admin can do everything.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Project.
-        required: true
-      tags:
-      - projects
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Project'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Project'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Project'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Project'
-          description: ''
-    patch:
-      operationId: projects_partial_update
-      description: |-
-        View for get, create, update and delete a project.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request if they are the owner. Admin can do everything.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Project.
-        required: true
-      tags:
-      - projects
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedProject'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedProject'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedProject'
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Project'
-          description: ''
-    delete:
-      operationId: projects_destroy
-      description: |-
-        View for get, create, update and delete a project.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request if they are the owner. Admin can do everything.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        description: A unique integer value identifying this Project.
-        required: true
-      tags:
-      - projects
-      security:
-      - jwtAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/projects/{project_id}/tasks/:
-    get:
-      operationId: projects_tasks_list
-      parameters:
-      - in: path
-        name: project_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - projects
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
-          description: ''
-    post:
-      operationId: projects_tasks_create
-      parameters:
-      - in: path
-        name: project_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - projects
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Task'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Task'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Task'
-        required: true
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-          description: ''
-  /api/tasks/{id}/:
-    get:
-      operationId: tasks_retrieve
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - tasks
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-          description: ''
-    put:
-      operationId: tasks_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - tasks
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Task'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Task'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Task'
-        required: true
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-          description: ''
-    patch:
-      operationId: tasks_partial_update
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - tasks
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedTask'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedTask'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedTask'
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-          description: ''
-    delete:
-      operationId: tasks_destroy
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - tasks
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '204':
-          description: No response body
-  /api/tasks/{task_id}/comments/:
-    get:
-      operationId: tasks_comments_list
-      parameters:
-      - in: path
-        name: task_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - tasks
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Task'
-          description: ''
-    post:
-      operationId: tasks_comments_create
-      parameters:
-      - in: path
-        name: task_id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - tasks
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Task'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/Task'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/Task'
-        required: true
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-          description: ''
-  /api/users/{id}/:
-    get:
-      operationId: users_retrieve
-      description: |-
-        View for get, update and delete an user.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request on their own id. Admin can do everything.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - users
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    put:
-      operationId: users_update
-      description: |-
-        View for get, update and delete an user.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request on their own id. Admin can do everything.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - users
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/User'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/User'
-        required: true
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    patch:
-      operationId: users_partial_update
-      description: |-
-        View for get, update and delete an user.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request on their own id. Admin can do everything.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - users
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/PatchedUser'
-      security:
-      - jwtAuth: []
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/User'
-          description: ''
-    delete:
-      operationId: users_destroy
-      description: |-
-        View for get, update and delete an user.
-        Permissions: Any authenticated user can make a get request. For other request user can only make request on their own id. Admin can do everything.
-      parameters:
-      - in: path
-        name: id
-        schema:
-          type: integer
-        required: true
-      tags:
-      - users
-      security:
-      - jwtAuth: []
-      responses:
-        '204':
-          description: No response body
-  /api/users/login/:
-    post:
-      operationId: users_login_create
-      description: View for logging in a user
-      tags:
-      - users
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserLogin'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserLogin'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserLogin'
-        required: true
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserLogin'
-          description: ''
-  /api/users/register/:
-    post:
-      operationId: users_register_create
-      description: View for registering a new user
-      tags:
-      - users
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserRegistration'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/UserRegistration'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/UserRegistration'
-        required: true
-      security:
-      - jwtAuth: []
-      - {}
-      responses:
-        '201':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/UserRegistration'
-          description: ''
+                $ref: "#/components/schemas/Project"
+              example:
+                id: 1
+                name: "Project A"
+                description: "Sample project A description."
+                created_at: "2023-12-25T12:00:00Z"
+                updated_at: "2023-12-26T12:00:00Z"
+                owner:
+                  id: 1
+                  username: "john_doe"
 components:
   schemas:
-    PatchedProject:
-      type: object
-      description: Serializer for Project.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          maxLength: 255
-        description:
-          type: string
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        updated_at:
-          type: string
-          format: date-time
-          readOnly: true
-        owner:
-          allOf:
-          - $ref: '#/components/schemas/UserForProject'
-          readOnly: true
-    PatchedTask:
-      type: object
-      description: Serializer for Task.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        title:
-          type: string
-          maxLength: 255
-        description:
-          type: string
-        assigned_to:
-          type: integer
-          nullable: true
-        status:
-          $ref: '#/components/schemas/StatusEnum'
-        priority:
-          $ref: '#/components/schemas/PriorityEnum'
-        due_date:
-          type: string
-          format: date
-        created_at:
-          type: string
-          format: date-time
-          readOnly: true
-        project:
-          allOf:
-          - $ref: '#/components/schemas/Project'
-          readOnly: true
-        assign_to:
-          allOf:
-          - $ref: '#/components/schemas/UserForProject'
-          readOnly: true
-    PatchedUser:
-      type: object
-      description: Serializer for User.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email Address
-          maxLength: 254
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        date_joined:
-          type: string
-          format: date-time
-          readOnly: true
-    PriorityEnum:
-      enum:
-      - low
-      - medium
-      - high
-      type: string
-      description: |-
-        * `low` - Low
-        * `medium` - Medium
-        * `high` - High
     Project:
       type: object
       description: Serializer for Project.
@@ -763,26 +204,19 @@ components:
           format: date-time
           readOnly: true
         owner:
-          allOf:
-          - $ref: '#/components/schemas/UserForProject'
-          readOnly: true
+          type: object
+          properties:
+            id:
+              type: integer
+            username:
+              type: string
       required:
-      - created_at
-      - description
-      - id
-      - name
-      - owner
-      - updated_at
-    StatusEnum:
-      enum:
-      - to_do
-      - in_progress
-      - done
-      type: string
-      description: |-
-        * `to_do` - To Do
-        * `in_progress` - In Progress
-        * `done` - Done
+        - id
+        - name
+        - description
+        - created_at
+        - updated_at
+        - owner
     Task:
       type: object
       description: Serializer for Task.
@@ -792,146 +226,31 @@ components:
           readOnly: true
         title:
           type: string
-          maxLength: 255
         description:
           type: string
-        assigned_to:
-          type: integer
-          nullable: true
         status:
-          $ref: '#/components/schemas/StatusEnum'
-        priority:
-          $ref: '#/components/schemas/PriorityEnum'
-        due_date:
           type: string
-          format: date
+          enum:
+            - to_do
+            - in_progress
+            - done
+        priority:
+          type: string
+          enum:
+            - low
+            - medium
+            - high
         created_at:
           type: string
           format: date-time
           readOnly: true
-        project:
-          allOf:
-          - $ref: '#/components/schemas/Project'
-          readOnly: true
-        assign_to:
-          allOf:
-          - $ref: '#/components/schemas/UserForProject'
-          readOnly: true
       required:
-      - assign_to
-      - created_at
-      - description
-      - due_date
-      - id
-      - priority
-      - project
-      - status
-      - title
-    User:
-      type: object
-      description: Serializer for User.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email Address
-          maxLength: 254
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-        date_joined:
-          type: string
-          format: date-time
-          readOnly: true
-      required:
-      - date_joined
-      - email
-      - id
-      - username
-    UserForProject:
-      type: object
-      description: Serializer for User for Project.
-      properties:
-        id:
-          type: integer
-          readOnly: true
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email Address
-          maxLength: 254
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-      required:
-      - email
-      - id
-      - username
-    UserLogin:
-      type: object
-      properties:
-        email:
-          type: string
-          format: email
-        password:
-          type: string
-          writeOnly: true
-      required:
-      - email
-      - password
-    UserRegistration:
-      type: object
-      description: Serializer for User Registration. Password is write only field.
-      properties:
-        username:
-          type: string
-          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
-            only.
-          pattern: ^[\w.@+-]+$
-          maxLength: 150
-        email:
-          type: string
-          format: email
-          title: Email Address
-          maxLength: 254
-        password:
-          type: string
-          writeOnly: true
-        confirm_password:
-          type: string
-          writeOnly: true
-        first_name:
-          type: string
-          maxLength: 150
-        last_name:
-          type: string
-          maxLength: 150
-      required:
-      - confirm_password
-      - email
-      - password
-      - username
+        - id
+        - title
+        - description
+        - status
+        - priority
+        - created_at
   securitySchemes:
     jwtAuth:
       type: http
