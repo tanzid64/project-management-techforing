@@ -60,7 +60,7 @@ TechForing Limited is building a project management tool that allows teams to co
 
 Clone the repo and go to the project root.
 ```bash
-git clone https://github.com/tanzid64/
+git clone https://github.com/tanzid64/project-management-techforing.git
 ```
 ```bash
 cd 
