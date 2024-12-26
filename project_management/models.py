@@ -1,7 +1,9 @@
+from tabnanny import verbose
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils.translation import gettext_lazy as _
 from project_management.managers import UserManager
+
 
 # Create your models here.
 class TimeStampMixin(models.Model):
@@ -60,3 +62,39 @@ class User(AbstractUser):
     def get_full_name(self) -> str:
         full_name = f"{self.first_name} {self.last_name}"
         return full_name.strip()
+
+
+class Project(TimeStampMixin):
+    name = models.CharField(verbose_name=_("Name"), max_length=255)
+    description = models.TextField(verbose_name=_("Description"))
+    owner = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
+
+    def __str__(self):
+        return self.name
+
+    class Meta:
+        verbose_name = _("Project")
+        verbose_name_plural = _("Projects")
+        ordering = ["-created_at"]
+
+
+class ProjectMembers(models.Model):
+    class RoleChoices(models.TextChoices):
+        OWNER = "admin", _("Admin")
+        MEMBER = "member", _("Member")
+
+    project = models.ForeignKey(
+        Project, on_delete=models.CASCADE, related_name="members"
+    )
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="projects")
+    role = models.CharField(
+        verbose_name=_("Role"), max_length=10, choices=RoleChoices.choices
+    )
+
+    class Meta:
+        unique_together = ("project", "user")
+        verbose_name = _("Project Member")
+        verbose_name_plural = _("Project Members")
+
+    def __str__(self):
+        return f"{self.user.username}-{self.project.name}"

@@ -69,7 +69,7 @@ class UserGetUpdateDeleteView(generics.RetrieveUpdateDestroyAPIView):
     queryset = User.objects.all()
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
-    def get_object(self) -> User:
+    def get_object(self):
         obj: User = super().get_object()
 
         # Restrict update/delete to the user themselves or an admin
