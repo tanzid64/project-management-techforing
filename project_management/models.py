@@ -100,3 +100,37 @@ class ProjectMembers(models.Model):
 
     def __str__(self):
         return f"{self.user.username}-{self.project.name}"
+
+
+class Task(TimeStampMixin):
+    class StatusChoices(models.TextChoices):
+        TO_DO = "to_do", _("To Do")
+        IN_PROGRESS = "in_progress", _("In Progress")
+        DONE = "done", _("Done")
+
+    class PriorityChoices(models.TextChoices):
+        LOW = "low", _("Low")
+        MEDIUM = "medium", _("Medium")
+        HIGH = "high", _("High")
+
+    title = models.CharField(verbose_name=_("Title"), max_length=255)
+    description = models.TextField(verbose_name=_("Description"))
+    status = models.CharField(
+        verbose_name=_("Status"), max_length=20, choices=StatusChoices.choices
+    )
+    priority = models.CharField(
+        verbose_name=_("Priority"), max_length=10, choices=PriorityChoices.choices
+    )
+    project = models.ForeignKey(Project, on_delete=models.CASCADE, related_name="tasks")
+    assigned_to = models.ForeignKey(
+        User, on_delete=models.SET_NULL, related_name="assigned_tasks", null=True
+    )
+    due_date = models.DateField(verbose_name=_("Due Date"))
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = _("Task")
+        verbose_name_plural = _("Tasks")
+        ordering = ["-created_at"]
