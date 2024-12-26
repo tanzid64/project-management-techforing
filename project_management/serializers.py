@@ -93,4 +93,20 @@ class TaskSerializer(serializers.ModelSerializer):
             "project",
             "assign_to",
         )
-        read_only_fields = ("created_at", "updated_at", "id")
+        read_only_fields = ("created_at", "id")
+        
+class CommentSerializer(serializers.ModelSerializer):
+    """
+    Serializer for Comment.
+    """
+
+    class Meta:
+        model = Task
+        fields = (
+            "id",
+            "content",
+            "created_at",
+            "user",
+            "task",
+        )
+        read_only_fields = ("created_at", "id")

@@ -130,4 +130,8 @@ REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework_simplejwt.authentication.JWTAuthentication",
     ),
+    "DEFAULT_RENDERER_CLASSES": (
+        "project_management.renderers.UserRenderer",
+        "project_management.renderers.UserBrowsableAPIRenderer",
+    ),
 }

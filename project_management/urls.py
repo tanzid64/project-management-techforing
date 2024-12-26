@@ -14,7 +14,13 @@ router.register(r"projects", ProjectViewSet)
 # TaskViewSet URLs
 task_list_create_view = TaskViewSet.as_view({"get": "list", "post": "create"})
 task_detail_view = TaskViewSet.as_view(
-    {"get": "retrieve", "put": "update", "patch": "update", "delete": "destroy"}
+    {"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}
+)
+
+# CommentViewSet URLs
+comment_list_create_view = TaskViewSet.as_view({"get": "list", "post": "create"})
+comment_detail_view = TaskViewSet.as_view(
+    {"get": "retrieve", "put": "update", "patch": "partial_update", "delete": "destroy"}
 )
 
 urlpatterns = [
@@ -38,5 +44,16 @@ urlpatterns = [
         "tasks/<int:pk>/",
         task_detail_view,
         name="task-detail",
+    ),
+    # Comment paths:-
+    path(
+        "tasks/<int:task_id>/comments/",
+        comment_list_create_view,
+        name="comment-list-create",
+    ),
+    path(
+        "comments/<int:pk>/",
+        comment_detail_view,
+        name="comment-detail",
     ),
 ]
