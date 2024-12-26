@@ -4,6 +4,7 @@ from project_management.serializers import UserSerializer, UserRegistrationSeria
 from rest_framework.response import Response
 from rest_framework.request import Request
 from rest_framework import status, generics, permissions
+from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, get_user_model
 
 User = get_user_model()
