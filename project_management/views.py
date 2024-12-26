@@ -8,6 +8,7 @@ from project_management.serializers import (
     CommentSerializer,
     ProjectSerializer,
     TaskSerializer,
+    UserLoginSerializer,
     UserSerializer,
     UserRegistrationSerializer,
 )
@@ -16,6 +17,7 @@ from rest_framework.request import Request
 from rest_framework import status, generics, permissions, viewsets
 from rest_framework.exceptions import PermissionDenied
 from django.contrib.auth import authenticate, get_user_model
+from drf_spectacular.utils import extend_schema, OpenApiExample
 
 User = get_user_model()
 
@@ -48,10 +50,11 @@ class UserLoginView(APIView):
     """
     View for logging in a user
     """
-
+    serializer_class = UserLoginSerializer
     def post(self, request: Request) -> Response:
-        email = request.data.get("email")
-        password = request.data.get("password")
+        serializer = self.get_serializer(data=request.data)
+        email = serializer.validated_data["email"]
+        password = serializer.validated_data["password"]
         user = authenticate(email=email, password=password)
         if user is None:
             return Response(

@@ -35,6 +35,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # Rest Framework
+    "drf_spectacular",
     "rest_framework",
     "rest_framework_simplejwt",
     # Custom Apps
@@ -134,4 +135,30 @@ REST_FRAMEWORK = {
         "project_management.renderers.UserRenderer",
         "project_management.renderers.UserBrowsableAPIRenderer",
     ),
+    "DEFAULT_PARSER_CLASSES": [
+        "rest_framework.parsers.JSONParser",
+        "rest_framework.parsers.FormParser",
+        "rest_framework.parsers.MultiPartParser",
+    ],
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+}
+
+
+# Spectacular Settings
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Project Management API",
+    "DESCRIPTION": "A project management API collection for Tech Foring Limited",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    # "COMPONENT_SPLIT_REQUEST": True,
+    "CONTACT": {
+        "Author": "Tanzid Haque",
+        "Email": "tanzid3@gmail.com",
+        "Github": "https://github.com/tanzid64",
+    },
+    "SWAGGER_UI_SETTINGS": {
+        "deepLinking": True,
+        "persistAuthorization": True,
+        "displayOperationId": True,
+    },
 }

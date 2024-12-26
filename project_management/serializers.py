@@ -48,6 +48,11 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
         return user
 
 
+class UserLoginSerializer(serializers.Serializer):
+    email = serializers.EmailField(required=True)
+    password = serializers.CharField(required=True,write_only=True)
+
+
 class UserForProjectSerializer(serializers.ModelSerializer):
     """
     Serializer for User for Project.
@@ -94,7 +99,7 @@ class TaskSerializer(serializers.ModelSerializer):
             "assign_to",
         )
         read_only_fields = ("created_at", "id")
-        
+
 class CommentSerializer(serializers.ModelSerializer):
     """
     Serializer for Comment.
