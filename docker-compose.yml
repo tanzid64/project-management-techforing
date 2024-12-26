@@ -1,0 +1,32 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    command: python manage.py runserver 0.0.0.0:8001 --insecure
+    ports:
+      - "8001:8001"
+    environment:
+      - SECRET_KEY=django-insecure-0zry*hrru9sdpod1@tyfcrrw7-lie)!^#dcs3+xin4znsv_a6f
+      - DEBUG=True
+      - DATABASE_URL=postgres://user:password@db:5432/TechForing
+    volumes:
+      - .:/code
+    depends_on:
+      - db
+    restart: unless-stopped
+
+  db:
+    image: postgres
+    ports:
+      - "5439:5432"
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=TechForing
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
