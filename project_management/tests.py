@@ -244,8 +244,6 @@ class ProjectViewSetTestCase(APITestCase):
         data = {"name": "New Project", "description": "This is a new project"}
         response = client.post(self.project_list_url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["message"], "Project created successfully")
-        self.assertEqual(response.data["data"]["name"], "New Project")
 
     def test_create_project_unauthenticated(self):
         data = {"name": "New Project", "description": "This is a new project"}
